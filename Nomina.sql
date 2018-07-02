@@ -81,3 +81,15 @@ CREATE TABLE Empleado(
     CONSTRAINT FK_Empleado_Horario FOREIGN KEY (Codigo_Horario)
     REFERENCES Horario(Codigo_Horario)
 );
+
+CREATE TABLE Suplemento
+(Codigo_Suplemento int not null,
+Nombre char(20) not null,
+Cantidad int not null,
+Tipo char (20)
+);
+
+CREATE TABLE Comprobante
+(Codigo_Comprobante int NOT NULL,
+CONSTRAINT FK_Empleado_Comprobante FOREIGN KEY (Codigo_Empleado) REFERENCES Empleado(Codigo_Empleado)
+);
