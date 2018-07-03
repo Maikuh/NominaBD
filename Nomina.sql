@@ -85,12 +85,20 @@ CREATE TABLE Empleado(
 
 CREATE TABLE Asistencia(
     ID_Asistencia int IDENTITY(1,1) NOT NULL,
-    Horas_Cumplidas TIME NOT NULL,
-    Horas_Extras TIME NOT NULL,
+    Horas_Cumplidas tinyint NOT NULL,
+    Horas_Extras tinyint NOT NULL,
     Codigo_Empleado int NOT NULL,
-    CONSTRAINT PK_Cargo PRIMARY KEY (ID_Cargo),
+    Fecha date NOT NULL,
+    CONSTRAINT PK_Asistencia PRIMARY KEY (ID_Asistencia),
     CONSTRAINT FK_Codigo_Empleado FOREIGN KEY (Codigo_Empleado)
     REFERENCES Empleado(Codigo_Empleado)
+);
+
+CREATE TABLE Suplemento(
+    Codigo_Suplemento int NOT NULL,
+    Nombre varchar(20) NOT NULL,
+    Cantidad decimal(11,2) NOT NULL,
+    Tipo varchar(20) NOT NULL
 );
 
 CREATE TABLE Nomina(
@@ -98,21 +106,15 @@ CREATE TABLE Nomina(
     Codigo_Suplemento int NOT NULL,
     Codigo_Empleado int NOT NULL,
     Sueldo MONEY NOT NULL,
-    CONSTRAINT PK_Cargo PRIMARY KEY (Codigo_Nomina),
-    CONSTRAINT FK_Codigo_Suplemento FOREIGN KEY (Codigo_Suplemento)
-    REFERENCES Suplemento(Codigo_Suplemento)
-    CONSTRAINT FK_Codigo_Empleado FOREIGN KEY (Codigo_Empleado)
+    CONSTRAINT PK_Nomina PRIMARY KEY (Codigo_Nomina),
+    CONSTRAINT FK_Nomina_Suplemento FOREIGN KEY (Codigo_Suplemento)
+    REFERENCES Suplemento(Codigo_Suplemento),
+    CONSTRAINT FK_Nomina_Empleado FOREIGN KEY (Codigo_Empleado)
     REFERENCES Empleado(Codigo_Empleado)
 );
 
-CREATE TABLE Suplemento
-(Codigo_Suplemento int not null,
-Nombre char(20) not null,
-Cantidad int not null,
-Tipo char (20)
-);
-
-CREATE TABLE Comprobante
-(Codigo_Comprobante int NOT NULL,
-CONSTRAINT FK_Empleado_Comprobante FOREIGN KEY (Codigo_Empleado) REFERENCES Empleado(Codigo_Empleado)
+CREATE TABLE Comprobante(
+    Codigo_Comprobante int NOT NULL,
+    Codigo_Empleado int NOT NULL,
+    CONSTRAINT FK_Comprobante_Empleado FOREIGN KEY (Codigo_Empleado) REFERENCES Empleado(Codigo_Empleado)
 );
