@@ -48,6 +48,7 @@ CREATE TABLE Departamento(
     CONSTRAINT PK_Departamento PRIMARY KEY(Codigo_Departamento)
 );
 
+
 CREATE TABLE Cargo(
     ID_Cargo int IDENTITY(1,1) NOT NULL,
     Codigo_Departamento int NOT NULL,
@@ -80,6 +81,28 @@ CREATE TABLE Empleado(
     REFERENCES Direccion(ID_Direccion),
     CONSTRAINT FK_Empleado_Horario FOREIGN KEY (Codigo_Horario)
     REFERENCES Horario(Codigo_Horario)
+);
+
+CREATE TABLE Asistencia(
+    ID_Asistencia int IDENTITY(1,1) NOT NULL,
+    Horas_Cumplidas TIME NOT NULL,
+    Horas_Extras TIME NOT NULL,
+    Codigo_Empleado int NOT NULL,
+    CONSTRAINT PK_Cargo PRIMARY KEY (ID_Cargo),
+    CONSTRAINT FK_Codigo_Empleado FOREIGN KEY (Codigo_Empleado)
+    REFERENCES Empleado(Codigo_Empleado)
+);
+
+CREATE TABLE Nomina(
+    Codigo_Nomina int IDENTITY(1,1) NOT NULL,
+    Codigo_Suplemento int NOT NULL,
+    Codigo_Empleado int NOT NULL,
+    Sueldo MONEY NOT NULL,
+    CONSTRAINT PK_Cargo PRIMARY KEY (Codigo_Nomina),
+    CONSTRAINT FK_Codigo_Suplemento FOREIGN KEY (Codigo_Suplemento)
+    REFERENCES Suplemento(Codigo_Suplemento)
+    CONSTRAINT FK_Codigo_Empleado FOREIGN KEY (Codigo_Empleado)
+    REFERENCES Empleado(Codigo_Empleado)
 );
 
 CREATE TABLE Suplemento
