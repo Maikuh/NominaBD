@@ -29,17 +29,10 @@ CREATE TABLE Direccion(
     Sector varchar(50) NOT NULL,
     Calle varchar(50) NOT NULL,
     Codigo_Postal char(5) NOT NULL,
+    TelefonoCasa char(10),
+    TelefonoMovil char(10),
     CONSTRAINT PK_Direccion PRIMARY KEY (ID_Direccion),
     CONSTRAINT CHK_Codigo_Postal CHECK (Codigo_Postal NOT LIKE '%[^0-9]%')
-);
-
-CREATE TABLE Telefono(
-    Numero_Telefono char(10) NOT NULL,
-    ID_Direccion int NOT NULL,
-    CONSTRAINT PK_Telefono PRIMARY KEY (Numero_Telefono),
-    CONSTRAINT FK_Telefono_Direccion FOREIGN KEY (ID_Direccion) 
-    REFERENCES Direccion(ID_Direccion),
-    CONSTRAINT CHK_Numero CHECK (Numero_Telefono NOT LIKE '%[^0-9]%')
 );
 
 CREATE TABLE Departamento(
@@ -47,7 +40,6 @@ CREATE TABLE Departamento(
     Nombre varchar(50) NOT NULL,
     CONSTRAINT PK_Departamento PRIMARY KEY(Codigo_Departamento)
 );
-
 
 CREATE TABLE Cargo(
     ID_Cargo int IDENTITY(1,1) NOT NULL,
@@ -72,7 +64,7 @@ CREATE TABLE Empleado(
     Cedula char(11) NOT NULL,
     Fecha_Nacimiento date NOT NULL,
     ID_Cargo int NOT NULL,
-    ID_Direccion int NOT NULL,
+    ID_Direccion int NOT NULL UNIQUE,
     Codigo_Horario int NOT NULL,
     CONSTRAINT PK_Empleado PRIMARY KEY (Codigo_Empleado),
     CONSTRAINT FK_Empleado_Cargo FOREIGN KEY (ID_Cargo)
