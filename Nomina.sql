@@ -52,8 +52,8 @@ CREATE TABLE Cargo(
 
 CREATE TABLE Horario(
     Codigo_Horario int NOT NULL,
-    Hora_Inicio time(0) NOT NULL,
-    Hora_Fin time(0) NOT NULL,
+    Hora_Inicio datetime NOT NULL,
+    Hora_Fin datetime NOT NULL,
     CONSTRAINT PK_Horario PRIMARY KEY (Codigo_Horario)
 );
 
