@@ -86,17 +86,8 @@ CREATE TABLE Asistencia(
     REFERENCES Empleado(Codigo_Empleado)
 );
 
-CREATE TABLE Suplemento(
-    Codigo_Suplemento int IDENTITY(1,1) NOT NULL,
-    Nombre varchar(20) NOT NULL,
-    Cantidad decimal(11,2) NOT NULL,
-    Tipo varchar(20) NOT NULL
-    CONSTRAINT PK_Suplemento PRIMARY KEY (Codigo_Suplemento)
-);
-
 CREATE TABLE Nomina(
     Codigo_Nomina int IDENTITY(1,1) NOT NULL,
-    Codigo_Suplemento int NOT NULL,
     Codigo_Empleado int NOT NULL,
     Sueldo MONEY NOT NULL,
     CONSTRAINT PK_Nomina PRIMARY KEY (Codigo_Nomina),
@@ -104,18 +95,20 @@ CREATE TABLE Nomina(
     REFERENCES Empleado(Codigo_Empleado)
 );
 
+CREATE TABLE Retencion(
+    Codigo_Retencion int IDENTITY(1,1) NOT NULL,
+    Codigo_Nomina int NOT NULL,
+    Nombre varchar(20) NOT NULL,
+    Cantidad decimal(11,2) NOT NULL,
+    CONSTRAINT PK_Retencion PRIMARY KEY (Codigo_Retencion),
+    CONSTRAINT FK_Nomina_Retencion FOREIGN KEY(Codigo_Nomina)
+    REFERENCES Nomina(Codigo_Nomina),
+    CONSTRAINT CHK_Nombre CHECK(Nombre IN ('AFP', 'SFS', 'ISR', 'Seguro Medico'))
+);
+
 CREATE TABLE Comprobante(
     Codigo_Comprobante int NOT NULL,
     Codigo_Empleado int NOT NULL,
     CONSTRAINT PK_Comprobante PRIMARY KEY (Codigo_Comprobante),
     CONSTRAINT FK_Comprobante_Empleado FOREIGN KEY (Codigo_Empleado) REFERENCES Empleado(Codigo_Empleado)
-);
-
-CREATE TABLE Suplemento_Nomina (
-    Codigo_Suplemento int NOT NULL,
-    Codigo_Nomina int NOT NULL,
-    CONSTRAINT PK_Suplemento_Nomina PRIMARY KEY(Codigo_Suplemento,
-     Codigo_Nomina),
-    CONSTRAINT FK_Suplemento_Nomina_Suplemento FOREIGN KEY (Codigo_Suplemento) REFERENCES Suplemento(Codigo_Suplemento),
-    CONSTRAINT FK_Suplemento_Nomina_Nomina FOREIGN KEY (Codigo_Nomina) REFERENCES Nomina(Codigo_Nomina)
 );
