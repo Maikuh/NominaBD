@@ -75,17 +75,6 @@ CREATE TABLE Empleado(
     REFERENCES Horario(Codigo_Horario)
 );
 
-CREATE TABLE Asistencia(
-    ID_Asistencia int IDENTITY(1,1) NOT NULL,
-    Horas_Cumplidas tinyint NOT NULL,
-    Horas_Extras tinyint NOT NULL,
-    Codigo_Empleado int NOT NULL,
-    Fecha date NOT NULL,
-    CONSTRAINT PK_Asistencia PRIMARY KEY (ID_Asistencia),
-    CONSTRAINT FK_Codigo_Empleado FOREIGN KEY (Codigo_Empleado)
-    REFERENCES Empleado(Codigo_Empleado)
-);
-
 CREATE TABLE Nomina(
     Codigo_Nomina int IDENTITY(1,1) NOT NULL,
     Codigo_Empleado int NOT NULL,
@@ -104,11 +93,4 @@ CREATE TABLE Retencion(
     CONSTRAINT FK_Nomina_Retencion FOREIGN KEY(Codigo_Nomina)
     REFERENCES Nomina(Codigo_Nomina),
     CONSTRAINT CHK_Nombre CHECK(Nombre IN ('AFP', 'SFS', 'ISR', 'Seguro Medico'))
-);
-
-CREATE TABLE Comprobante(
-    Codigo_Comprobante int NOT NULL,
-    Codigo_Empleado int NOT NULL,
-    CONSTRAINT PK_Comprobante PRIMARY KEY (Codigo_Comprobante),
-    CONSTRAINT FK_Comprobante_Empleado FOREIGN KEY (Codigo_Empleado) REFERENCES Empleado(Codigo_Empleado)
 );
