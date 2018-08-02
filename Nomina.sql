@@ -190,3 +190,38 @@ insert into Retencion values (7, 'AFP', 70.00);
 insert into Retencion values (7, 'SFS', 115.00);
 insert into Retencion values (7, 'ISR', 100.00);
 insert into Retencion values (7, 'Seguro Medico', 650.40);
+
+insert into Retencion values (8, 'AFP', 100.00),
+(8, 'SFS', 120.00), 
+(8, 'ISR', 130.00), 
+(8, 'Seguro Medico', 1500.30);
+
+insert into Retencion values (9, 'AFP', 200.00),
+(9, 'SFS', 220.00), 
+(9, 'ISR', 50.00), 
+(9, 'Seguro Medico', 1000.00);
+
+insert into Retencion values (10, 'AFP', 80.00),
+(10, 'SFS', 30.00), 
+(10, 'ISR', 40.00), 
+(10, 'Seguro Medico', 500.50);
+
+insert into Retencion values (11, 'AFP', 90.00),
+(11, 'SFS', 100.00), 
+(11, 'ISR', 120.00), 
+(11, 'Seguro Medico', 800.40);
+
+insert into Retencion values (12, 'AFP', 110.00),
+(12, 'SFS', 120.00), 
+(12, 'ISR', 130.00), 
+(12, 'Seguro Medico', 1800.20);
+
+insert into Retencion values (13, 'AFP', 50.00), 
+(13, 'SFS', 80.00), 
+(13, 'ISR', 110.00), 
+(13, 'Seguro Medico', 500.30);
+
+insert into Retencion values (14, 'AFP', 70.00),
+(14, 'SFS', 115.00),
+(14, 'ISR', 100.00),
+(14, 'Seguro Medico', 650.40);
