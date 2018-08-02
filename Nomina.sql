@@ -79,6 +79,7 @@ CREATE TABLE Nomina(
     Codigo_Nomina int IDENTITY(1,1) NOT NULL,
     Codigo_Empleado int NOT NULL,
     Sueldo MONEY NOT NULL,
+	Fecha Date NOT NULL,
     CONSTRAINT PK_Nomina PRIMARY KEY (Codigo_Nomina),
     CONSTRAINT FK_Nomina_Empleado FOREIGN KEY (Codigo_Empleado)
     REFERENCES Empleado(Codigo_Empleado)
@@ -96,7 +97,7 @@ CREATE TABLE Retencion(
 );
 
 
-insert into Direccion values ('Samana','Pueblo viejo', 'Lopez de vega', '12231', '8098094513', '809-702-3421');
+insert into Direccion values ('Samana','Pueblo viejo', 'Lopez de vega', '12231', '8098094513', '8097023421');
 insert into Direccion values ('Santo Domingo','Los Mina', 'Maria Trinidad Sanchez', '54221', '8098094513', '8097023421');
 insert into Direccion values ('Santo Domingo','San Luis', 'Francisco del rosario Sanchez', '32123', '8098094513', '8097023421');
 insert into Direccion values ('San Juan','Malana', 'Juan Pablo Duarte', '13121', '8098094513', '8097023421');
@@ -134,18 +135,26 @@ insert into Empleado values ('Estefania','Peralta','40225432123', '1998-02-12', 
 insert into Empleado values ('Winston','Cruz','43203223111', '1995-12-21', 7, 2, 1);
 insert into Empleado values ('Miguel','Araujo','53203223112', '1998-11-16', 6, 5, 6);
 insert into Empleado values ('Erick','Pimentel','40203324692', '1999-02-21', 1, 6, 1);
-insert into Empleado values ('Arianna','Diaz','40226715091', '1998-08-02', 4, 2, 7);
+insert into Empleado values ('Arianna','Diaz','40226715091', '1998-08-02', 4, 1, 7);
 insert into Empleado values ('Dayhana','Cruz','40324755291', '1998-06-01', 3, 7, 4);
 insert into Empleado values ('Alberkys','Santana','40322355291', '1998-05-26', 3, 8, 7);
-insert into Empleado values ('Brian','Correa','4032233291', '1994-01-31', 6, 3, 6);
+insert into Empleado values ('Brian','Correa','4032233291', '1994-01-31', 6, 4, 6);
 
-insert into Nomina values (1, '50000.00');
-insert into Nomina values (2, '100000.00');
-insert into Nomina values (3, '20000.00');
-insert into Nomina values (4, '60000.00');
-insert into Nomina values (5, '65000.00');
-insert into Nomina values (6, '45000.00');
-insert into Nomina values (7, '70000.00');
+insert into Nomina values (1, '50000.00', '2018-07-31');
+insert into Nomina values (2, '100000.00', '2018-07-31');
+insert into Nomina values (3, '20000.00', '2018-07-31');
+insert into Nomina values (4, '60000.00', '2018-07-31');
+insert into Nomina values (5, '65000.00', '2018-07-31');
+insert into Nomina values (6, '45000.00', '2018-07-31');
+insert into Nomina values (7, '70000.00', '2018-07-31');
+
+INSERT INTO Nomina VALUES (1, '50000.00', '2018-08-31'),
+(2, '98000.00', '2018-08-31'),
+(3, '22000.00', '2018-08-31'),
+(4, '60000.00', '2018-08-31'),
+(5, '63000.00', '2018-08-31'),
+(6, '47000.00', '2018-08-31'),
+(7, '68000.00', '2018-08-31');
 
 insert into Retencion values (1, 'AFP', 100.00);
 insert into Retencion values (1, 'SFS', 120.00);
@@ -181,9 +190,3 @@ insert into Retencion values (7, 'AFP', 70.00);
 insert into Retencion values (7, 'SFS', 115.00);
 insert into Retencion values (7, 'ISR', 100.00);
 insert into Retencion values (7, 'Seguro Medico', 650.40);
-
-insert into Retencion values (8, 'AFP', 90.00);
-insert into Retencion values (8, 'SFS', 150.00);
-insert into Retencion values (8, 'ISR', 180.00);
-insert into Retencion values (8, 'Seguro medico', 850.50);
-
