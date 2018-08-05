@@ -237,6 +237,11 @@ select  Nombre_Departamento, Nombre_Empleado , Hora_Inicio, Hora_Fin
 from Horario H, Departamento D, Empleado E 
 where H.Codigo_Horario = E.Codigo_Horario and D.Codigo_Departamento = E.ID_Cargo and D.Codigo_Departamento = 3
 
+Create View Direccion_De_Empleado
+as
+select Codigo_Empleado, Nombre_Empleado, Provincia, Sector, Calle, Codigo_Postal
+from Empleado, Direccion
+
 --Triggers
 
 Create Trigger Actualizar_Sueldo_Empleado
@@ -244,10 +249,52 @@ on Empleado for update
 
 
 
+Create Trigger Seguridad_Datos
+On Database
+For Drop_Table, Alter_Table
+as 
+Print 'Desactive el trigger de seguridad para eliminar o modificar las tablas de la base de datos'
+Rollback;
+
 
 --Stored Procedure
 
+Create Procedure dbo.Ingresar_Direccion_Empleado
 
+@Provincia varchar(50), 
+@Sector varchar(50),
+@Calle varchar(50),
+@Codigo_Postal char(5),
+@TelefonoCasa char(10),
+@TelefonoMovil char(10)
+
+As
+
+SET NOCOUNT ON
+
+INSERT INTO [dbo].[Direccion]
+           ([Provincia]
+           ,[Sector]
+           ,[Calle]
+           ,[Codigo_Postal]
+           ,[TelefonoCasa]
+           ,[TelefonoMovil])
+     VALUES
+           (@Provincia
+           ,@Sector
+           ,@Calle
+           ,@Codigo_Postal
+           ,@TelefonoCasa
+           ,@TelefonoMovil)
+GO
 
 --Function
 
+Create Function Sueldo_Final (@Sueldo int, @Cantidad int)
+Returns int
+as
+Begin
+	Declare @Sueldo_Final int
+	Set @Sueldo_Final = @Sueldo - @Cantidad
+	Return (select @Sueldo_Final)
+End
