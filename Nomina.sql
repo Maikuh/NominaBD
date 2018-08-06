@@ -79,6 +79,8 @@ CREATE TABLE Nomina(
     Codigo_Nomina int IDENTITY(1,1) NOT NULL,
     Codigo_Empleado int NOT NULL,
     Sueldo MONEY NOT NULL,
+    Horas_Extras MONEY,
+    Bonificaciones MONEY,
 	Fecha Date NOT NULL,
     CONSTRAINT PK_Nomina PRIMARY KEY (Codigo_Nomina),
     CONSTRAINT FK_Nomina_Empleado FOREIGN KEY (Codigo_Empleado)
@@ -95,8 +97,6 @@ CREATE TABLE Retencion(
     REFERENCES Nomina(Codigo_Nomina),
     CONSTRAINT CHK_Nombre CHECK(Nombre IN ('AFP', 'SFS', 'ISR', 'Seguro Medico'))
 );
-
---Data Inserts
 
 insert into Direccion values ('Samana','Pueblo viejo', 'Lopez de vega', '12231', '8098094513', '8097023421'),
 ('Santo Domingo','Los Mina', 'Maria Trinidad Sanchez', '54221', '8098094513', '8097023421'),
@@ -141,7 +141,7 @@ insert into Empleado values ('Estefania','Peralta','40225432123', '1998-02-12', 
 ('Alberkys','Santana','40322355291', '1998-05-26', 3, 8, 7),
 ('Brian','Correa','4032233291', '1994-01-31', 6, 4, 6);
 
-insert into Nomina values (1, '50000.00', '2018-07-31'), 
+insert into Nomina(Codigo_Empleado, Sueldo, Fecha) values (1, '50000.00', '2018-07-31'), 
 (2, '100000.00', '2018-07-31'),
 (3, '20000.00', '2018-07-31'),
 (4, '60000.00', '2018-07-31'),
@@ -149,7 +149,7 @@ insert into Nomina values (1, '50000.00', '2018-07-31'),
 (6, '45000.00', '2018-07-31'),
 (7, '70000.00', '2018-07-31');
 
-INSERT INTO Nomina VALUES (1, '50000.00', '2018-08-31'),
+INSERT INTO Nomina(Codigo_Empleado, Sueldo, Fecha) VALUES (1, '50000.00', '2018-08-31'),
 (2, '98000.00', '2018-08-31'),
 (3, '22000.00', '2018-08-31'),
 (4, '60000.00', '2018-08-31'),
@@ -226,148 +226,134 @@ insert into Retencion values (14, 'AFP', 70.00),
 (14, 'SFS', 115.00),
 (14, 'ISR', 100.00),
 (14, 'Seguro Medico', 650.40);
-
---Views
-
-Create View Horario_por_Departamento 
-as 
-select Departamento.Nombre, Hora_Inicio, Hora_Fin 
-from Horario H, Departamento D, Empleado E 
-where H.Codigo_Horario = E.Codigo_Horario and D.Codigo_Departamento = E.ID_Cargo 
-
-Create View Direccion_De_Empleado
-as
-select Codigo_Empleado, Nombre_Empleado, Provincia, Sector, Calle, Codigo_Postal
-from Empleado, Direccion
-
-Create View Sueldo_Por_Cargo
-as
-select Sueldo, Nombre_Cargo, Nombre_Empleado
-from NOMINA, Cargo, EMPLEADO
-
---Triggers
-
-
-Create Trigger Actualizar_Sueldo_Empleado
-on Nomina.Sueldo for update
-as 
-
-
-Create Trigger Seguridad_Datos
-On Database
-For Drop_Table, Alter_Table
-as 
-Print 'Desactive el trigger de seguridad para eliminar o modificar las tablas de la base de datos'
-Rollback;
-
-Create Trigger Notificacion_Modificacion_Nomina
-on Empleado
-For Correo, Actualizar_Sueldo_Empleado
-as
-Print 'Su sueldo ha sido modificado.'
-Go
-
---Stored Procedure
-
-Create Procedure dbo.Ingresar_Direccion_Empleado
-
-@Provincia varchar(50), 
-@Sector varchar(50),
-@Calle varchar(50),
-@Codigo_Postal char(5),
-@TelefonoCasa char(10),
-@TelefonoMovil char(10)
-
-As
-
-SET NOCOUNT ON
-
-INSERT INTO [dbo].[Direccion]
-           ([Provincia]
-           ,[Sector]
-           ,[Calle]
-           ,[Codigo_Postal]
-           ,[TelefonoCasa]
-           ,[TelefonoMovil])
-     VALUES
-           (@Provincia
-           ,@Sector
-           ,@Calle
-           ,@Codigo_Postal
-           ,@TelefonoCasa
-           ,@TelefonoMovil)
 GO
 
-Create procedure dbo.Ingresar_Departamento
+-- --Views
+-- Create View Horario_por_Departamento 
+-- as 
+-- select Departamento.Nombre, Hora_Inicio, Hora_Fin 
+-- from Horario H, Departamento D, Empleado E 
+-- where H.Codigo_Horario = E.Codigo_Horario and D.Codigo_Departamento = E.ID_Cargo 
+-- GO
 
-@Codigo_Departamento int,
-@Nombre_Departamento varchar(50)
+-- Create View Direccion_De_Empleado
+-- as
+-- select Codigo_Empleado, Nombre_Empleado, Provincia, Sector, Calle, Codigo_Postal
+-- from Empleado, Direccion
+-- GO
 
-as
+-- Create View Sueldo_Por_Cargo
+-- as
+-- select Sueldo, Nombre_Cargo, Nombre_Empleado
+-- from NOMINA, Cargo, EMPLEADO
+-- GO
 
-set nocount on
+-- --Triggers
+-- Create Trigger Actualizar_Sueldo_Empleado
+-- on Nomina.Sueldo for update
+-- as 
+-- GO
 
-insert into [dbo].[Departamento]
-([Codigo_Departamento],
-[Nombre_Departamento])
+-- Create Trigger Seguridad_Datos
+-- On Database
+-- For Drop_Table, Alter_Table
+-- as 
+-- Print 'Desactive el trigger de seguridad para eliminar o modificar las tablas de la base de datos'
+-- Rollback;
+-- GO
 
-values
-(@Codigo_Departamento,
-@Nombre_Departamento)
+-- Create Trigger Notificacion_Modificacion_Nomina
+-- on Empleado
+-- For Correo, Actualizar_Sueldo_Empleado
+-- as
+-- Print 'Su sueldo ha sido modificado.'
+-- Go
 
-Go
+-- --Stored Procedure
 
-Create procedure dbo.Ingresar_Nomina_Empleado
-@Codigo_Empleado int,
-@Sueldo money,
-@Fecha date
+-- Create Procedure dbo.Ingresar_Direccion_Empleado
+--     @Provincia varchar(50), 
+--     @Sector varchar(50),
+--     @Calle varchar(50),
+--     @Codigo_Postal char(5),
+--     @TelefonoCasa char(10),
+--     @TelefonoMovil char(10)
+-- As
+-- SET NOCOUNT ON
+-- INSERT INTO [dbo].[Direccion]
+--            ([Provincia]
+--            ,[Sector]
+--            ,[Calle]
+--            ,[Codigo_Postal]
+--            ,[TelefonoCasa]
+--            ,[TelefonoMovil])
+--      VALUES
+--            (@Provincia
+--            ,@Sector
+--            ,@Calle
+--            ,@Codigo_Postal
+--            ,@TelefonoCasa
+--            ,@TelefonoMovil)
+-- GO
 
-as
+-- Create procedure dbo.Ingresar_Departamento
+--     @Codigo_Departamento int,
+--     @Nombre_Departamento varchar(50)
+-- as
+-- set nocount on
+-- insert into [dbo].[Departamento]
+-- ([Codigo_Departamento],
+-- [Nombre_Departamento])
+-- values
+-- (@Codigo_Departamento,
+-- @Nombre_Departamento)
+-- Go
 
-set nocount on
+-- Create procedure dbo.Ingresar_Nomina_Empleado
+--     @Codigo_Empleado int,
+--     @Sueldo money,
+--     @Fecha date
+-- as
+-- set nocount on
+-- insert into [dbo].[Nomina] 
+-- ([Codigo_Empleado],
+-- [Sueldo],
+-- [Fecha]
+-- )
+-- values 
+-- (@Codigo_Empleado,
+-- @Sueldo, 
+-- @Fecha
+-- )
+-- Go
 
-insert into [dbo].[Nomina] 
-([Codigo_Empleado],
-[Sueldo],
-[Fecha]
-)
+-- --Function
+-- Create Function Sueldo_Final (@Sueldo int, @Cantidad int)
+-- Returns int
+-- as
+-- Begin
+-- 	Declare @Sueldo_Final int
+-- 	Set @Sueldo_Final = @Sueldo - @Cantidad
+-- 	Return (select @Sueldo_Final)
+-- End
+-- GO
 
-values 
-(@Codigo_Empleado,
-@Sueldo, 
-@Fecha
-)
+-- Create Function Sueldo_Anual (@Sueldo int)
+-- Returns int
+-- as
+-- Begin
+--      Declare @Sueldo_Anual int
+-- 	 Set @Sueldo_Anual = @Sueldo * 12
+-- 	 Return (Select @Sueldo_Anual)
+-- End
+-- GO
 
-Go
-
-
---Function
-
-Create Function Sueldo_Final (@Sueldo int, @Cantidad int)
-Returns int
-as
-Begin
-	Declare @Sueldo_Final int
-	Set @Sueldo_Final = @Sueldo - @Cantidad
-	Return (select @Sueldo_Final)
-End
-
-Create Function Sueldo_Anual (@Sueldo int)
-Returns int
-as
-Begin
-     Declare @Sueldo_Anual int
-	 Set @Sueldo_Anual = @Sueldo * 12
-	 Return (Select @Sueldo_Anual)
-End
-
-
-Create Function Sueldo_Quincenal (@Sueldo int)
-Returns int
-as
-Begin
-   Declare @Sueldo_Quincenal int
-   Set @Sueldo_Quincenal = @Sueldo/2 
-   Return (Select @Sueldo_Quincenal)
-End
-
+-- Create Function Sueldo_Quincenal (@Sueldo int)
+-- Returns int
+-- as
+-- Begin
+--    Declare @Sueldo_Quincenal int
+--    Set @Sueldo_Quincenal = @Sueldo/2 
+--    Return (Select @Sueldo_Quincenal)
+-- End
+-- GO
