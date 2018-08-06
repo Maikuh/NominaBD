@@ -231,9 +231,9 @@ insert into Retencion values (14, 'AFP', 70.00),
 
 Create View Horario_por_Departamento 
 as 
-select  Nombre_Departamento, Nombre_Empleado , Hora_Inicio, Hora_Fin 
+select Departamento.Nombre, Hora_Inicio, Hora_Fin 
 from Horario H, Departamento D, Empleado E 
-where H.Codigo_Horario = E.Codigo_Horario and D.Codigo_Departamento = E.ID_Cargo and D.Codigo_Departamento = 3
+where H.Codigo_Horario = E.Codigo_Horario and D.Codigo_Departamento = E.ID_Cargo 
 
 Create View Direccion_De_Empleado
 as
@@ -247,9 +247,10 @@ from NOMINA, Cargo, EMPLEADO
 
 --Triggers
 
-Create Trigger Actualizar_Sueldo_Empleado
-on Empleado for update 
 
+Create Trigger Actualizar_Sueldo_Empleado
+on Nomina.Sueldo for update
+as 
 
 
 Create Trigger Seguridad_Datos
@@ -316,6 +317,30 @@ values
 
 Go
 
+Create procedure dbo.Ingresar_Nomina_Empleado
+@Codigo_Empleado int,
+@Sueldo money,
+@Fecha date
+
+as
+
+set nocount on
+
+insert into [dbo].[Nomina] 
+([Codigo_Empleado],
+[Sueldo],
+[Fecha]
+)
+
+values 
+(@Codigo_Empleado,
+@Sueldo, 
+@Fecha
+)
+
+Go
+
+
 --Function
 
 Create Function Sueldo_Final (@Sueldo int, @Cantidad int)
@@ -335,3 +360,14 @@ Begin
 	 Set @Sueldo_Anual = @Sueldo * 12
 	 Return (Select @Sueldo_Anual)
 End
+
+
+Create Function Sueldo_Quincenal (@Sueldo int)
+Returns int
+as
+Begin
+   Declare @Sueldo_Quincenal int
+   Set @Sueldo_Quincenal = @Sueldo/2 
+   Return (Select @Sueldo_Quincenal)
+End
+
