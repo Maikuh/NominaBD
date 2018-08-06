@@ -242,6 +242,11 @@ as
 select Codigo_Empleado, Nombre_Empleado, Provincia, Sector, Calle, Codigo_Postal
 from Empleado, Direccion
 
+Create View Sueldo_Por_Cargo
+as
+select Sueldo, Nombre_Cargo, Nombre_Empleado
+from NOMINA, Cargo, EMPLEADO
+
 --Triggers
 
 Create Trigger Actualizar_Sueldo_Empleado
@@ -256,6 +261,12 @@ as
 Print 'Desactive el trigger de seguridad para eliminar o modificar las tablas de la base de datos'
 Rollback;
 
+Create Trigger Notificacion_Modificacion_Nomina
+on Empleado
+For Correo, Actualizar_Sueldo_Empleado
+as
+Print 'Su sueldo ha sido modificado.'
+Go
 
 --Stored Procedure
 
@@ -288,6 +299,25 @@ INSERT INTO [dbo].[Direccion]
            ,@TelefonoMovil)
 GO
 
+Create procedure dbo.Ingresar_Departamento
+
+@Codigo_Departamento int,
+@Nombre_Departamento varchar(50)
+
+as
+
+set nocount on
+
+insert into [dbo].[Departamento]
+([Codigo_Departamento],
+[Nombre_Departamento])
+
+values
+(@Codigo_Departamento,
+@Nombre_Departamento)
+
+Go
+
 --Function
 
 Create Function Sueldo_Final (@Sueldo int, @Cantidad int)
@@ -297,4 +327,13 @@ Begin
 	Declare @Sueldo_Final int
 	Set @Sueldo_Final = @Sueldo - @Cantidad
 	Return (select @Sueldo_Final)
+End
+
+Create Function Sueldo_Anual (@Sueldo int)
+Returns int
+as
+Begin
+     Declare @Sueldo_Anual int
+	 Set @Sueldo_Anual = @Sueldo * 12
+	 Return (Select @Sueldo_Anual)
 End
