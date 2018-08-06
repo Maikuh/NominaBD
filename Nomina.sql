@@ -231,7 +231,7 @@ insert into Retencion values (14, 'AFP', 70.00),
 
 Create View Horario_por_Departamento 
 as 
-select Departamento.Nombre, Hora_Inicio, Hora_Fin 
+select D.Nombre, Hora_Inicio, Hora_Fin 
 from Horario H, Departamento D, Empleado E 
 where H.Codigo_Horario = E.Codigo_Horario and D.Codigo_Departamento = E.ID_Cargo 
 
@@ -239,12 +239,12 @@ Select * from Horario_por_Departamento
 
 Create View Direccion_De_Empleado
 as
-select Nombre_Empleado, Provincia, Sector, Calle
+select Nombre, Provincia, Sector, Calle
 from Empleado, Direccion
 
 Create View Sueldo_Por_Cargo
 as
-select Sueldo, Nombre_Cargo
+select Sueldo, C.Nombre
 from Nomina N, Cargo C, Empleado E
 where N.Codigo_Nomina = E.ID_Cargo and N.Codigo_Empleado = C.ID_Cargo
 
@@ -318,7 +318,7 @@ set nocount on
 
 insert into [dbo].[Departamento]
 ([Codigo_Departamento],
-[Nombre_Departamento])
+[Nombre])
 
 values
 (@Codigo_Departamento,
