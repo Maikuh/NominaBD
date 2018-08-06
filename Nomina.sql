@@ -237,7 +237,7 @@ where H.Codigo_Horario = E.Codigo_Horario and D.Codigo_Departamento = E.ID_Cargo
 
 Create View Direccion_De_Empleado
 as
-select Codigo_Empleado, Nombre_Empleado, Provincia, Sector, Calle, Codigo_Postal
+select Nombre_Empleado, Provincia, Sector, Calle
 from Empleado, Direccion
 
 Create View Sueldo_Por_Cargo
