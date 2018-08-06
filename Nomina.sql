@@ -237,6 +237,8 @@ select  Nombre_Departamento, Nombre_Empleado , Hora_Inicio, Hora_Fin
 from Horario H, Departamento D, Empleado E 
 where H.Codigo_Horario = E.Codigo_Horario and D.Codigo_Departamento = E.ID_Cargo and D.Codigo_Departamento = 3
 
+Select * from Horario_por_Departamento
+
 Create View Direccion_De_Empleado
 as
 select Codigo_Empleado, Nombre_Empleado, Provincia, Sector, Calle, Codigo_Postal
@@ -244,9 +246,11 @@ from Empleado, Direccion
 
 Create View Sueldo_Por_Cargo
 as
-select Sueldo, Nombre_Cargo, Nombre_Empleado
-from NOMINA, Cargo, EMPLEADO
+select Sueldo, Nombre_Cargo
+from Nomina N, Cargo C, Empleado E
+where N.Codigo_Nomina = E.ID_Cargo and N.Codigo_Empleado = C.ID_Cargo
 
+Select * from Sueldo_Por_Cargo
 --Triggers
 
 Create Trigger Actualizar_Sueldo_Empleado
@@ -261,12 +265,17 @@ as
 Print 'Desactive el trigger de seguridad para eliminar o modificar las tablas de la base de datos'
 Rollback;
 
+
 Create Trigger Notificacion_Modificacion_Nomina
 on Empleado
-For Correo, Actualizar_Sueldo_Empleado
-as
-Print 'Su sueldo ha sido modificado.'
-Go
+AFTER INSERT, UPDATE, DELETE
+AS
+EXEC sp_send_dbmail 
+@profile_name='Notificación', 
+@recipients='arliiin23@gmail.com', 
+@subject='Modificación de Nómina', 
+@body='Se ha realizado cambios en la nómina, el sueldo del empleado (name) del departamento (name) ha sido modificado.'
+GO
 
 --Stored Procedure
 
