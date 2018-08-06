@@ -23,8 +23,6 @@ GO
 USE Nomina;
 GO
 
---Tables Nomina DB
-
 CREATE TABLE Direccion(
     ID_Direccion int IDENTITY(1,1) NOT NULL,
     Provincia varchar(50) NOT NULL,
@@ -39,14 +37,14 @@ CREATE TABLE Direccion(
 
 CREATE TABLE Departamento(
     Codigo_Departamento int IDENTITY(1,1) NOT NULL,
-    Nombre_Departamento varchar(50) NOT NULL,
+    Nombre varchar(50) NOT NULL,
     CONSTRAINT PK_Departamento PRIMARY KEY(Codigo_Departamento)
 );
 
 CREATE TABLE Cargo(
     ID_Cargo int IDENTITY(1,1) NOT NULL,
     Codigo_Departamento int NOT NULL,
-    Nombre_Cargo varchar(50) NOT NULL,
+    Nombre varchar(50) NOT NULL,
     CONSTRAINT PK_Cargo PRIMARY KEY (ID_Cargo),
     CONSTRAINT FK_Cargo_Departamento FOREIGN KEY (Codigo_Departamento)
     REFERENCES Departamento(Codigo_Departamento)
@@ -61,8 +59,8 @@ CREATE TABLE Horario(
 
 CREATE TABLE Empleado(
     Codigo_Empleado int IDENTITY(1,1) NOT NULL,
-    Nombre_Empleado varchar(40) NOT NULL,
-    Apellido_Empleado varchar(40) NOT NULL,
+    Nombre varchar(40) NOT NULL,
+    Apellido varchar(40) NOT NULL,
     Cedula char(11) NOT NULL,
     Fecha_Nacimiento date NOT NULL,
     ID_Cargo int NOT NULL,
@@ -90,12 +88,12 @@ CREATE TABLE Nomina(
 CREATE TABLE Retencion(
     Codigo_Retencion int IDENTITY(1,1) NOT NULL,
     Codigo_Nomina int NOT NULL,
-    Nombre_Retencion varchar(20) NOT NULL,
+    Nombre varchar(20) NOT NULL,
     Cantidad decimal(11,2) NOT NULL,
     CONSTRAINT PK_Retencion PRIMARY KEY (Codigo_Retencion),
     CONSTRAINT FK_Nomina_Retencion FOREIGN KEY(Codigo_Nomina)
     REFERENCES Nomina(Codigo_Nomina),
-    CONSTRAINT CHK_Nombre CHECK(Nombre_Retencion IN ('AFP', 'SFS', 'ISR', 'Seguro Medico'))
+    CONSTRAINT CHK_Nombre CHECK(Nombre IN ('AFP', 'SFS', 'ISR', 'Seguro Medico'))
 );
 
 --Data Inserts
@@ -119,7 +117,7 @@ insert into Departamento values ('Recursos humanos'),
 
 insert into Cargo values (1, 'Gerente'),
 (2, 'Encargado de finanzas'),
-(3, 'Diseñador Gráfico'),
+(3, 'Diseï¿½ador Grï¿½fico'),
 (4, 'Administrador'),
 (5, 'Director de proyecto'),
 (6, 'Vendedor'),
