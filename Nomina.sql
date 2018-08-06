@@ -239,8 +239,9 @@ Select * from Horario_por_Departamento
 
 Create View Direccion_De_Empleado
 as
-select Nombre, Provincia, Sector, Calle
-from Empleado, Direccion
+select Codigo_Empleado, Nombre, Provincia, Sector, Calle, Codigo_Postal
+from Empleado E, Direccion D
+where E.ID_Direccion = D.ID_Direccion
 
 Create View Sueldo_Por_Cargo
 as
@@ -248,7 +249,6 @@ select Sueldo, C.Nombre
 from Nomina N, Cargo C, Empleado E
 where N.Codigo_Nomina = E.ID_Cargo and N.Codigo_Empleado = C.ID_Cargo
 
-Select * from Sueldo_Por_Cargo
 --Triggers
 
 
