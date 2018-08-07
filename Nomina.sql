@@ -117,7 +117,7 @@ insert into Departamento values ('Recursos humanos'),
 
 insert into Cargo values (1, 'Gerente'),
 (2, 'Encargado de finanzas'),
-(3, 'Diseï¿½ador Grï¿½fico'),
+(3, 'Diseñador grafico'),
 (4, 'Administrador'),
 (5, 'Director de proyecto'),
 (6, 'Vendedor'),
@@ -252,10 +252,6 @@ where N.Codigo_Nomina = E.ID_Cargo and N.Codigo_Empleado = C.ID_Cargo
 --Triggers
 
 
-Create Trigger Actualizar_Sueldo_Empleado
-on Nomina.Sueldo for update
-as 
-
 
 Create Trigger Seguridad_Datos
 On Database
@@ -275,6 +271,26 @@ EXEC sp_send_dbmail
 @subject='Modificación de Nómina', 
 @body='Se ha realizado cambios en la nómina, el sueldo del empleado (name) del departamento (name) ha sido modificado.'
 GO
+
+Drop table if exists Control_Historial_Sueldo;
+ 
+Create table Control_Historial_Sueldo
+(
+ID_Cambio int Identity (1,1) primary key,
+Nombre_Empleado varchar(50),
+Antiguo_Sueldo money,
+Actual_Sueldo money
+);
+
+Create trigger Historial_Cambio_Sueldo
+on Nomina after update
+as
+if update(Sueldo)
+begin
+insert into Control_Historial_Sueldo (Nombre_Empleado, Antiguo_Sueldo, Actual_Sueldo) (select E.Nombre, D.Sueldo, I.Sueldo From deleted D, inserted I, Empleado E 
+where I.Codigo_Nomina = D.Codigo_Nomina and i.Codigo_Empleado = E.Codigo_Empleado
+); 
+end
 
 --Stored Procedure
 
@@ -380,3 +396,10 @@ Begin
    Return (Select @Sueldo_Quincenal)
 End
 
+--Test Codes
+
+update Nomina
+set Sueldo='14000.00'
+where Codigo_Nomina = 2
+
+select * from Control_Historial_Sueldo
