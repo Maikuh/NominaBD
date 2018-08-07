@@ -251,8 +251,6 @@ where N.Codigo_Nomina = E.ID_Cargo and N.Codigo_Empleado = C.ID_Cargo
 
 --Triggers
 
-
-
 Create Trigger Seguridad_Datos
 On Database
 For Drop_Table, Alter_Table
@@ -260,20 +258,14 @@ as
 Print 'Desactive el trigger de seguridad para eliminar o modificar las tablas de la base de datos'
 Rollback;
 
-
-Create Trigger Notificacion_Modificacion_Nomina
-on Nomina
-AFTER INSERT, UPDATE, DELETE
+CREATE TRIGGER Notificacion_Nomina
+ON Nomina
+FOR INSERT, UPDATE
 AS
-EXEC msdb.dbo.sp_send_dbmail 
-@profile_name='Profile de prueba', 
-@recipients='arliiin23@gmail.com',
-@blind_copy_recipients = 'arliiin23@gmail.com; estefaniaperalta2012@gmail.com', 
-@execute_query_database = 'Nomina',
-@subject='Notifcación', 
-@body='Se ha realizado cambios en la nómina, el sueldo del empleado (name) del departamento (name) ha sido modificado.',
-@attach_query_result_as_file = 0;
-GO
+IF exists (Select * from Nomina where Sueldo > 100000) 
+PRINT 'Empleado no posee sueldo sobre los 100,000 pesos.'
+ROLLBACK
+GO 
 
 Drop table if exists Control_Historial_Sueldo;
  
