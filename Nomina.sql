@@ -320,7 +320,6 @@ GO
 
 Create procedure dbo.Ingresar_Departamento
 
-@Codigo_Departamento int,
 @Nombre_Departamento varchar(50)
 
 as
@@ -328,12 +327,10 @@ as
 set nocount on
 
 insert into [dbo].[Departamento]
-([Codigo_Departamento],
-[Nombre])
+([Nombre])
 
 values
-(@Codigo_Departamento,
-@Nombre_Departamento)
+(@Nombre_Departamento)
 
 Go
 
