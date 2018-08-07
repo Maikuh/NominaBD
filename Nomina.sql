@@ -117,7 +117,7 @@ insert into Departamento values ('Recursos humanos'),
 
 insert into Cargo values (1, 'Gerente'),
 (2, 'Encargado de finanzas'),
-(3, 'Diseï¿½ador Grï¿½fico'),
+(3, 'Diseñador grafico'),
 (4, 'Administrador'),
 (5, 'Director de proyecto'),
 (6, 'Vendedor'),
@@ -231,7 +231,7 @@ insert into Retencion values (14, 'AFP', 70.00),
 
 Create View Horario_por_Departamento 
 as 
-select Departamento.Nombre, Hora_Inicio, Hora_Fin 
+select D.Nombre, Hora_Inicio, Hora_Fin 
 from Horario H, Departamento D, Empleado E 
 where H.Codigo_Horario = E.Codigo_Horario and D.Codigo_Departamento = E.ID_Cargo 
 
@@ -239,22 +239,18 @@ Select * from Horario_por_Departamento
 
 Create View Direccion_De_Empleado
 as
-select Nombre_Empleado, Provincia, Sector, Calle
-from Empleado, Direccion
+select Codigo_Empleado, Nombre, Provincia, Sector, Calle, Codigo_Postal
+from Empleado E, Direccion D
+where E.ID_Direccion = D.ID_Direccion
 
 Create View Sueldo_Por_Cargo
 as
-select Sueldo, Nombre_Cargo
+select Sueldo, C.Nombre
 from Nomina N, Cargo C, Empleado E
 where N.Codigo_Nomina = E.ID_Cargo and N.Codigo_Empleado = C.ID_Cargo
 
-Select * from Sueldo_Por_Cargo
 --Triggers
 
-
-Create Trigger Actualizar_Sueldo_Empleado
-on Nomina.Sueldo for update
-as 
 
 
 Create Trigger Seguridad_Datos
@@ -266,15 +262,38 @@ Rollback;
 
 
 Create Trigger Notificacion_Modificacion_Nomina
-on Empleado
+on Nomina
 AFTER INSERT, UPDATE, DELETE
 AS
-EXEC sp_send_dbmail 
-@profile_name='Notificación', 
-@recipients='arliiin23@gmail.com', 
-@subject='Modificación de Nómina', 
-@body='Se ha realizado cambios en la nómina, el sueldo del empleado (name) del departamento (name) ha sido modificado.'
+EXEC msdb.dbo.sp_send_dbmail 
+@profile_name='Profile de prueba', 
+@recipients='arliiin23@gmail.com',
+@blind_copy_recipients = 'arliiin23@gmail.com; estefaniaperalta2012@gmail.com', 
+@execute_query_database = 'Nomina',
+@subject='Notifcación', 
+@body='Se ha realizado cambios en la nómina, el sueldo del empleado (name) del departamento (name) ha sido modificado.',
+@attach_query_result_as_file = 0;
 GO
+
+Drop table if exists Control_Historial_Sueldo;
+ 
+Create table Control_Historial_Sueldo
+(
+ID_Cambio int Identity (1,1) primary key,
+Nombre_Empleado varchar(50),
+Antiguo_Sueldo money,
+Actual_Sueldo money
+);
+
+Create trigger Historial_Cambio_Sueldo
+on Nomina after update
+as
+if update(Sueldo)
+begin
+insert into Control_Historial_Sueldo (Nombre_Empleado, Antiguo_Sueldo, Actual_Sueldo) (select E.Nombre, D.Sueldo, I.Sueldo From deleted D, inserted I, Empleado E 
+where I.Codigo_Nomina = D.Codigo_Nomina and i.Codigo_Empleado = E.Codigo_Empleado
+); 
+end
 
 --Stored Procedure
 
@@ -318,7 +337,7 @@ set nocount on
 
 insert into [dbo].[Departamento]
 ([Codigo_Departamento],
-[Nombre_Departamento])
+[Nombre])
 
 values
 (@Codigo_Departamento,
@@ -380,3 +399,10 @@ Begin
    Return (Select @Sueldo_Quincenal)
 End
 
+--Test Codes
+
+update Nomina
+set Sueldo='14000.00'
+where Codigo_Nomina = 2
+
+select * from Control_Historial_Sueldo
