@@ -262,10 +262,11 @@ CREATE TRIGGER Notificacion_Nomina
 ON Nomina
 FOR INSERT, UPDATE
 AS
-IF exists (Select * from Nomina where Sueldo > 100000) 
+IF exists (Select sueldo from inserted where Sueldo > 100000)
+begin 
 PRINT 'Empleado no posee sueldo sobre los 100,000 pesos.'
-ROLLBACK
-GO 
+ROLLBACK;
+End
 
 Drop table if exists Control_Historial_Sueldo;
  
@@ -283,8 +284,7 @@ as
 if update(Sueldo)
 begin
 insert into Control_Historial_Sueldo (Nombre_Empleado, Antiguo_Sueldo, Actual_Sueldo) (select E.Nombre, D.Sueldo, I.Sueldo From deleted D, inserted I, Empleado E 
-where I.Codigo_Nomina = D.Codigo_Nomina and i.Codigo_Empleado = E.Codigo_Empleado
-); 
+where I.Codigo_Nomina = D.Codigo_Nomina and i.Codigo_Empleado = E.Codigo_Empleado); 
 end
 
 --Stored Procedure
